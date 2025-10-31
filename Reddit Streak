@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reddit Streak Calculator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f7fa;
+      color: #333;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="number"] {
+      width: 120px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin: 0 0.5rem;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .date-info, .custom-calc {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.8rem;
+      text-align: center;
+    }
+
+    th {
+      background: #0078d7;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reddit Streak Calculator</h1>
+
+  <div class="date-info">
+    <p>Today's Date: <span id="today"></span></p>
+  </div>
+
+  <div class="custom-calc">
+    <label for="customDays">Current Streak Count:</label>
+    <input type="number" id="customDays" placeholder="e.g. 100">
+    <button id="adjustBtn">Calculate Reddit Streak</button>
+  </div>
+
+  <table id="adjustedResults">
+    <thead>
+      <tr>
+        <th>Reddit Streak Goals</th>
+        <th>Acheievement Date</th>
+        <th>Day of Week</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <footer>Based on today’s date and current streak count</footer>
+
+  <script>
+    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730];
+    const today = new Date();
+
+    function formatDate(date) {
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    document.getElementById("today").textContent = formatDate(today);
+
+    document.getElementById("adjustBtn").addEventListener("click", () => {
+      const offsetInput = document.getElementById("customDays");
+      const offset = parseInt(offsetInput.value) || 0;
+      const tbody = document.querySelector("#adjustedResults tbody");
+      tbody.innerHTML = "";
+
+      goals.forEach(days => {
+        const adjustedDays = days - offset;
+        const adjustedDate = new Date(today);
+        adjustedDate.setDate(today.getDate() + adjustedDays);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${days} - ${offset} = ${adjustedDays}</td>
+          <td>${formatDate(adjustedDate)}</td>
+          <td>${adjustedDate.toLocaleDateString(undefined, { weekday: "long" })}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
