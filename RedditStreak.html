@@ -10,20 +10,21 @@
       background: #f4f7fa;
       color: #333;
       padding: 2rem;
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
     }
-
     h1 {
       text-align: center;
       color: #2c3e50;
       margin-bottom: 1rem;
     }
-
+    .date-info, .custom-calc {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
     label {
       font-weight: bold;
     }
-
     input[type="number"] {
       width: 120px;
       padding: 0.5rem;
@@ -32,7 +33,6 @@
       border: 1px solid #ccc;
       margin: 0 0.5rem;
     }
-
     button {
       padding: 0.6rem 1.2rem;
       background-color: #0078d7;
@@ -43,38 +43,32 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
     button:hover {
       background-color: #005fa3;
     }
-
-    .date-info, .custom-calc {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       background: white;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
     th, td {
       border: 1px solid #ddd;
       padding: 0.8rem;
       text-align: center;
+      vertical-align: middle;
     }
-
     th {
       background: #0078d7;
       color: white;
     }
-
     tr:nth-child(even) {
       background: #f9f9f9;
     }
-
+    img.goal-img {
+      width: 40px;
+      height: auto;
+    }
     footer {
       text-align: center;
       margin-top: 2rem;
@@ -99,18 +93,40 @@
   <table id="adjustedResults">
     <thead>
       <tr>
+        <th>Image</th>
         <th>Reddit Streak Goals</th>
-        <th>Acheievement Date</th>
+        <th>acheivement Date</th>
         <th>Day of Week</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <footer>Based on today’s date and current streak count</footer>
+  <footer>Based on today’s date and adjustable day offset</footer>
 
   <script>
     const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730];
+    // *** Fill these with the correct image URLs ***
+    const images = [
+      "https://path.to/image_for_goal_5.png",
+      "https://path.to/image_for_goal_10.png",
+      "https://path.to/image_for_goal_20.png",
+      "https://path.to/image_for_goal_30.png",
+      "https://path.to/image_for_goal_40.png",
+      "https://path.to/image_for_goal_50.png",
+      "https://path.to/image_for_goal_75.png",
+      "https://path.to/image_for_goal_100.png",
+      "https://path.to/image_for_goal_150.png",
+      "https://path.to/image_for_goal_200.png",
+      "https://path.to/image_for_goal_300.png",
+      "https://path.to/image_for_goal_365.png",
+      "https://path.to/image_for_goal_400.png",
+      "https://path.to/image_for_goal_500.png",
+      "https://path.to/image_for_goal_600.png",
+      "https://path.to/image_for_goal_700.png",
+      "https://path.to/image_for_goal_730.png"
+    ];
+
     const today = new Date();
 
     function formatDate(date) {
@@ -129,14 +145,15 @@
       const tbody = document.querySelector("#adjustedResults tbody");
       tbody.innerHTML = "";
 
-      goals.forEach(days => {
+      goals.forEach((days, idx) => {
         const adjustedDays = days - offset;
         const adjustedDate = new Date(today);
         adjustedDate.setDate(today.getDate() + adjustedDays);
 
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${days} - ${offset} = ${adjustedDays}</td>
+          <td><img class="goal-img" src="${images[idx]}" alt="Image for ${days}-day goal"></td>
+          <td>${days} − ${offset} = ${adjustedDays}</td>
           <td>${formatDate(adjustedDate)}</td>
           <td>${adjustedDate.toLocaleDateString(undefined, { weekday: "long" })}</td>
         `;
