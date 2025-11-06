@@ -18,20 +18,20 @@
       color: #2c3e50;
       margin-bottom: 1rem;
     }
-    .date-info, .custom-calc {
+    .section {
       text-align: center;
       margin-bottom: 1.5rem;
     }
     label {
       font-weight: bold;
     }
-    input[type="number"] {
-      width: 120px;
+    input[type="text"], input[type="number"] {
+      width: 200px;
       padding: 0.5rem;
       font-size: 1rem;
       border-radius: 6px;
       border: 1px solid #ccc;
-      margin: 0 0.5rem;
+      margin: 0.5rem;
     }
     button {
       padding: 0.6rem 1.2rem;
@@ -76,16 +76,24 @@
       font-size: 0.9rem;
       color: #666;
     }
+    #message {
+      color: #d35400;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
   <h1>Reddit Streak Calculator</h1>
 
-  <div class="date-info">
-    <p>Today's Date: <span id="today"></span></p>
+  <div class="section">
+    <label for="username">Reddit Username:</label>
+    <input type="text" id="username" placeholder="e.g. Cloudycloud47x2">
+    <button id="fetchStreak">Fetch Streak</button>
+    <p id="message"></p>
   </div>
 
-  <div class="custom-calc">
+  <div class="section">
     <label for="customDays">Current Streak Count:</label>
     <input type="number" id="customDays" placeholder="e.g. 100">
     <button id="adjustBtn">Calculate Reddit Streak</button>
@@ -95,7 +103,7 @@
     <thead>
       <tr>
         <th>Image</th>
-        <th>Reddit Streak Goal</th>
+        <th>Goal</th>
         <th>Achievement Date</th>
         <th>Day of Week</th>
       </tr>
@@ -103,10 +111,10 @@
     <tbody></tbody>
   </table>
 
-  <footer>Based on today’s date and your current streak count</footer>
+  <footer>Based on today’s date and your Reddit streak</footer>
 
   <script>
-    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800];
+    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730];
     const today = new Date();
     const baseImagePath = "https://cloudycloud47.github.io/images/";
 
@@ -118,7 +126,34 @@
       });
     }
 
-    document.getElementById("today").textContent = formatDate(today);
+    document.getElementById("today")?.textContent = formatDate(today);
+
+    document.getElementById("fetchStreak").addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const msg = document.getElementById("message");
+      if (!username) {
+        msg.textContent = "Please enter a Reddit username.";
+        return;
+      }
+      msg.textContent = "Fetching streak...";
+
+      try {
+        const response = await fetch(`https://www.reddit.com/user/${username}/achievements/category/3/`);
+        const html = await response.text();
+
+        // Try to extract the streak number from HTML (if visible)
+        const match = html.match(/(\d+)\s*day streak/i);
+        if (match) {
+          const streak = parseInt(match[1]);
+          document.getElementById("customDays").value = streak;
+          msg.textContent = `✅ Found streak: ${streak} days`;
+        } else {
+          msg.textContent = "⚠️ Could not find streak in the page. Please enter it manually.";
+        }
+      } catch (err) {
+        msg.textContent = "⚠️ Reddit blocked this request. Please enter your streak manually.";
+      }
+    });
 
     document.getElementById("adjustBtn").addEventListener("click", () => {
       const offsetInput = document.getElementById("customDays");
@@ -131,12 +166,7 @@
         const adjustedDate = new Date(today);
         adjustedDate.setDate(today.getDate() + adjustedDays);
 
-        // Choose correct image based on whether goal date is in the past or future
-        const imageFile =
-          adjustedDays <= 0
-            ? `${days}day.webp`
-            : `${days}day-notyet.webp`;
-
+        const imageFile = adjustedDays <= 0 ? `${days}day.webp` : `${days}day-notyet.webp`;
         const imageUrl = `${baseImagePath}${imageFile}`;
 
         const row = document.createElement("tr");
