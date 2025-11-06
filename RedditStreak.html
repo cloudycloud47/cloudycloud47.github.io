@@ -96,4 +96,72 @@
   <div class="section">
     <label for="customDays">Current Streak Count:</label>
     <input type="number" id="customDays" placeholder="e.g. 100">
-    <button id="adjustBtn">Calculate Reddit S
+    <button id="adjustBtn">Calculate Reddit Streak</button>
+  </div>
+
+  <table id="adjustedResults">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Goal</th>
+        <th>Achievement Date</th>
+        <th>Day of Week</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <footer>Based on today’s date and your Reddit streak</footer>
+
+  <script>
+    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730];
+    const today = new Date();
+    const baseImagePath = "https://cloudycloud47.github.io/images/";
+
+    function formatDate(date) {
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    document.getElementById("fetchStreak").addEventListener("click", () => {
+      const msg = document.getElementById("message");
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        msg.textContent = "Please enter your Reddit username.";
+        return;
+      }
+      msg.textContent = `Opening Reddit achievements for ${username}...`;
+      window.open(`https://www.reddit.com/user/${username}/achievements/category/3/`, "_blank");
+    });
+
+    document.getElementById("adjustBtn").addEventListener("click", () => {
+      console.log("Calculate button clicked ✅");
+      const offsetInput = document.getElementById("customDays");
+      const offset = parseInt(offsetInput.value) || 0;
+      const tbody = document.querySelector("#adjustedResults tbody");
+      tbody.innerHTML = "";
+
+      goals.forEach((days) => {
+        const adjustedDays = days - offset;
+        const adjustedDate = new Date(today);
+        adjustedDate.setDate(today.getDate() + adjustedDays);
+
+        const imageFile = adjustedDays <= 0 ? `${days}day.webp` : `${days}day-notyet.webp`;
+        const imageUrl = `${baseImagePath}${imageFile}`;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><img class="goal-img" src="${imageUrl}" alt="${days}-day badge"></td>
+          <td>${days} days (${days} − ${offset} = ${adjustedDays})</td>
+          <td>${formatDate(adjustedDate)}</td>
+          <td>${adjustedDate.toLocaleDateString(undefined, { weekday: "long" })}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
