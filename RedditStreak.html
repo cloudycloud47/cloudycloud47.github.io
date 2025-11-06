@@ -10,7 +10,7 @@
       background: #f4f7fa;
       color: #333;
       padding: 2rem;
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
     }
     h1 {
@@ -66,8 +66,9 @@
       background: #f9f9f9;
     }
     img.goal-img {
-      width: 40px;
+      width: 60px;
       height: auto;
+      border-radius: 6px;
     }
     footer {
       text-align: center;
@@ -94,41 +95,20 @@
     <thead>
       <tr>
         <th>Image</th>
-        <th>Reddit Streak Goals</th>
-        <th>acheivement Date</th>
+        <th>Reddit Streak Goal</th>
+        <th>Achievement Date</th>
         <th>Day of Week</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <footer>Based on today’s date and adjustable day offset</footer>
+  <footer>Based on today’s date and your current streak count</footer>
 
   <script>
     const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800];
-    // *** Fill these with the correct image URLs ***
-    const images = [
-      "images/5day.webp",
-      "images/10day.webp",
-      "images/20day.webp",
-      "images/30day.webp",
-      "images/40day.webp",
-      "images/50day.webp",
-      "images/75day.webp",
-      "images/100day.webp",
-      "images/150day.webp",
-      "images/200day-notyet.webp",
-      "images/300day-notyet.webp",
-      "images/365day-notyet.webp",
-      "images/400day-notyet.webp",
-      "images/500day-notyet.webp",
-      "images/600day-notyet.webp",
-      "images/700day-notyet.webp",
-      "images/730day-notyet.webp",
-      "images/800day-noteyet.webp",
-    ];
-
     const today = new Date();
+    const baseImagePath = "https://cloudycloud47.github.io/images/";
 
     function formatDate(date) {
       return date.toLocaleDateString(undefined, {
@@ -146,15 +126,23 @@
       const tbody = document.querySelector("#adjustedResults tbody");
       tbody.innerHTML = "";
 
-      goals.forEach((days, idx) => {
+      goals.forEach((days) => {
         const adjustedDays = days - offset;
         const adjustedDate = new Date(today);
         adjustedDate.setDate(today.getDate() + adjustedDays);
 
+        // Choose correct image based on whether goal date is in the past or future
+        const imageFile =
+          adjustedDays <= 0
+            ? `${days}day.webp`
+            : `${days}day-notyet.webp`;
+
+        const imageUrl = `${baseImagePath}${imageFile}`;
+
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td><img class="goal-img" src="${images[idx]}" alt="Image for ${days}-day goal"></td>
-          <td>${days} − ${offset} = ${adjustedDays}</td>
+          <td><img class="goal-img" src="${imageUrl}" alt="${days}-day badge"></td>
+          <td>${days} days (${days} − ${offset} = ${adjustedDays})</td>
           <td>${formatDate(adjustedDate)}</td>
           <td>${adjustedDate.toLocaleDateString(undefined, { weekday: "long" })}</td>
         `;
