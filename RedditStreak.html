@@ -102,7 +102,7 @@
   <table id="adjustedResults">
     <thead>
       <tr>
-        <th>Image</th>
+        <th>Badge</th>
         <th>Goal</th>
         <th>Achievement Date</th>
         <th>Day of Week</th>
@@ -111,10 +111,10 @@
     <tbody></tbody>
   </table>
 
-  <footer>Based on today’s date and your Reddit streak version 0.5</footer>
+  <footer>Based on today’s date and your Reddit streak version 0.51</footer>
 
   <script>
-    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800];
+    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800, 900, 1000, 1095];
     const today = new Date();
     const baseImagePath = "https://cloudycloud47.github.io/images/";
 
@@ -134,7 +134,7 @@
         msg.textContent = "Please enter a Reddit username.";
         return;
       }
-      msg.textContent = "Fetching streak...";
+      msg.textContent = "Calculating streak...";
 
       try {
         const proxy = "https://reddistreak.benkagan.workers.dev/";
