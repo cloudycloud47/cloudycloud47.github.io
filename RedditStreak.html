@@ -85,45 +85,6 @@
 </head>
 <body>
   <h1>Reddit Streak Calculator</h1>
-  <!-- Reddit Username Lookup Section -->
-<div class="mt-10 text-center">
-  <h2 class="font-bold text-2xl mb-4">🔎 Reddit User Lookup</h2>
-  
-  <div class="inline-flex items-center gap-2">
-    <input 
-      type="text" 
-      id="redditUsername" 
-      placeholder="Enter Reddit Username"
-      class="px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <button 
-      onclick="createRedditLink()" 
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-    >
-      Lookup
-    </button>
-  </div>
-
-  <div id="redditLink" class="mt-4 text-lg font-semibold"></div>
-</div>
-
-<script>
-  function createRedditLink() {
-    const username = document.getElementById('redditUsername').value.trim();
-    const linkContainer = document.getElementById('redditLink');
-    
-    if (username) {
-      const url = `https://www.reddit.com/user/${encodeURIComponent(username)}/achievements/category/3/`;
-      linkContainer.innerHTML = `
-        <a href="${url}" target="_blank" 
-           class="text-blue-600 hover:text-blue-800 underline">
-          View ${username}'s Achievement Page →
-        </a>
-      `;
-    } else {
-      linkContainer.innerHTML = `<span class="text-red-600">Please enter a username.</span>`;
-    }
-  }
 </script>
   <div class="section">
     <label for="username">Reddit Username:</label>
@@ -149,8 +110,45 @@
     </thead>
     <tbody></tbody>
   </table>
+  <!-- Reddit Username Lookup Section -->
+<div class="mt-10 text-center">
+  <h2 class="font-bold text-2xl mb-4">🔎 Reddit User Lookup</h2>
+  
+  <div class="inline-flex items-center gap-2">
+    <input 
+      type="text" 
+      id="redditUsername" 
+      placeholder="Enter Reddit Username"
+      class="px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <button 
+      onclick="createRedditLink()" 
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+    >
+      Lookup
+    </button>
+  </div>
 
-  <footer>Based on today’s date and your Reddit streak version 0.60</footer>
+  <div id="redditLink" class="mt-4 text-lg font-semibold"></div>
+</div>
+<script>
+  function createRedditLink() {
+    const username = document.getElementById('redditUsername').value.trim();
+    const linkContainer = document.getElementById('redditLink');
+    
+    if (username) {
+      const url = `https://www.reddit.com/user/${encodeURIComponent(username)}/achievements/category/3/`;
+      linkContainer.innerHTML = `
+        <a href="${url}" target="_blank" 
+           class="text-blue-600 hover:text-blue-800 underline">
+          View ${username}'s Achievement Page →
+        </a>
+      `;
+    } else {
+      linkContainer.innerHTML = `<span class="text-red-600">Please enter a username.</span>`;
+    }
+  }
+  <footer>Based on today’s date and your Reddit streak version 0.61</footer>
 
   <script>
     const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800, 900, 1000, 1095];
