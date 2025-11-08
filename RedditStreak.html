@@ -81,50 +81,94 @@
       font-weight: bold;
       margin-top: 0.5rem;
     }
+
+    /* --------- Lookup-specific styles (no Tailwind dependency) ---------- */
+    .lookup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .lookup h2 {
+      margin: 0 0 0.6rem 0;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .lookup-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    input.lookup-input {
+      width: 220px; /* match scale with other inputs but slightly wider for nicer look */
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    button.lookup-btn {
+      padding: 0.55rem 1rem;
+      background-color: #0078d7;
+      border-radius: 8px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    button.lookup-btn:hover {
+      background-color: #005fa3;
+    }
+    #redditLink {
+      margin-top: 0.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    #redditLink a {
+      color: #0078d7;
+      text-decoration: underline;
+    }
+    #redditLink .error {
+      color: #d9534f;
+    }
+    @media (max-width: 480px) {
+      input.lookup-input { width: 160px; }
+    }
+    /* ------------------------------------------------------------------- */
   </style>
 </head>
 <body>
   <h1>Reddit Streak Calculator</h1>
-<!-- Reddit Username Lookup Section -->
-<div class="flex flex-col items-center justify-center mt-10">
-  <h2 class="font-bold text-2xl mb-4 text-center">🔎 Reddit User Lookup</h2>
-  
-  <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-    <input 
-      type="text" 
-      id="redditUsername" 
-      placeholder="Enter Reddit Username"
-      class="px-4 py-2 border border-gray-400 rounded-lg text-center w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <button 
-      onclick="createRedditLink()" 
-      class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition mt-3 sm:mt-0"
-    >
-      Lookup
-    </button>
+
+  <!-- ======= Reddit Username Lookup Section (centered, no Tailwind) ======= -->
+  <div class="lookup" role="region" aria-label="Reddit username lookup">
+    <h2>🔎 Reddit User Lookup</h2>
+
+    <div class="lookup-row">
+      <input
+        type="text"
+        id="redditUsername"
+        placeholder="Enter Reddit Username"
+        class="lookup-input"
+        aria-label="Reddit username"
+      />
+      <button
+        id="lookupBtn"
+        class="lookup-btn"
+        onclick="createRedditLink()"
+        aria-label="Lookup Reddit username"
+      >
+        Lookup
+      </button>
+    </div>
+
+    <div id="redditLink" aria-live="polite"></div>
   </div>
-
-  <div id="redditLink" class="mt-5 text-lg font-semibold text-center"></div>
-</div>
-
-<script>
-  function createRedditLink() {
-    const username = document.getElementById('redditUsername').value.trim();
-    const linkContainer = document.getElementById('redditLink');
-    
-    if (username) {
-      const url = `https://www.reddit.com/user/${encodeURIComponent(username)}/achievements/category/3/`;
-      linkContainer.innerHTML = `
-        <a href="${url}" target="_blank" 
-           class="text-blue-600 hover:text-blue-800 underline">
-          View ${username}'s Achievement Page →
-        </a>
-      `;
-    } else {
-      linkContainer.innerHTML = `<span class="text-red-600">Please enter a username.</span>`;
-    }
-  }
-</script>
+  <!-- ===================================================================== -->
 
   <div class="section">
     <label for="username">Reddit Username:</label>
@@ -150,18 +194,39 @@
     </thead>
     <tbody></tbody>
   </table>
-  <footer>Based on today’s date and your Reddit streak version 0.62</footer>
+  <footer>Based on today’s date and your Reddit streak version 0.63</footer>
 
   <script>
-    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800, 900, 1000, 1095];
-    const today = new Date();
-    const baseImagePath = "https://cloudycloud47.github.io/images/";
+    // --- Create the reddit link for the username input ---
+    function createRedditLink() {
+      const username = document.getElementById('redditUsername').value.trim();
+      const linkContainer = document.getElementById('redditLink');
 
-    function formatDate(date) {
-      return date.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
+      if (username) {
+        const url = `https://www.reddit.com/user/${encodeURIComponent(username)}/achievements/category/3/`;
+        linkContainer.innerHTML = `
+          <a href="${url}" target="_blank" rel="noopener noreferrer">
+            View ${escapeHtml(username)}'s Achievement Page →
+          </a>
+        `;
+      } else {
+        linkContainer.innerHTML = `<span class="error">Please enter a username.</span>`;
+      }
+    }
+
+    // small helper to avoid injecting markup if username contains special chars
+    function escapeHtml(str) {
+      return str.replace(/[&<>"'`=\/]/g, function (s) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        })[s];
       });
     }
 
@@ -197,6 +262,18 @@
     });
 
     // --- Calculate dates and display ---
+    const goals = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 730, 800, 900, 1000, 1095];
+    const today = new Date();
+    const baseImagePath = "https://cloudycloud47.github.io/images/";
+
+    function formatDate(date) {
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
     document.getElementById("adjustBtn").addEventListener("click", () => {
       console.log("Calculate button clicked ✅");
       const offsetInput = document.getElementById("customDays");
