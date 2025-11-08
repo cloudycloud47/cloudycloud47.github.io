@@ -4,7 +4,8 @@
 
 Coming Soon?
 
-Checking someone elses Reddit Awards
+DONE - Checking someone elses Reddit Awards
+see Streak Calculator for the Lookup
 
 Penny Press simulator
 
